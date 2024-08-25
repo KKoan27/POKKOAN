@@ -1,70 +1,76 @@
-/* Fontes padrão */
-body {
-    font-family: monospace;
+html{
+    height: 100%;
+    width: 100%;
+    display: flex;
+
+}
+header{
+    color: rgb(0, 0, 0);
+    font-family: Andale Mono, monospace	;
+    font-weight: 600;
+    flex: 1;
+    border-radius: 15px;
+
+    
 }
 
-ul {
-    font-family: helvetica;
+
+.C1{
+    background-color: rgb(129, 224, 192);
+    flex: 1;
+    border-radius: 15px;
+
+
+}
+.C2{
+    background-color: rgb(195, 255, 66);
+    flex: 3;
+    border-radius: 15px;
+ 
 }
 
-li {
-    list-style: circle;
+.C2 #Itens {
+    font-weight:400;
 }
 
-.list {
-    list-style: square;
+.Container{
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    width: 100%;   
+    flex: 6; 
 }
 
-/* Variáveis de tema */
-:root {
-    --green: #00FF00;
-    --white: #FFFFFF;
-    --black: #000000;
-    --bg: var(--white); /* Padrão para temas */
-    --fontcolor: var(--black);
-    --btnbg: var(--black);
-    --btnfontcolor: var(--white);
+body{
+height: 100%;
+width: 100%;
+display: flex;
+flex-direction: column;
+
 }
 
-/* Tema Claro */
-.light-theme {
-    --bg: var(--white);
-    --fontcolor: var(--black);
-    --btnbg: var(--black);
-    --btnfontcolor: var(--white);
+footer{
+flex: 1;   
+background-color: rgb(44, 134, 179); 
+text-align: center;
+border-radius: 15px;
+margin: 10px;
+font-family: Arial;
+font-size: larger;
+font-weight:700;
 }
 
-/* Tema Escuro */
-.dark-theme {
-    --bg: var(--black);
-    --fontcolor: var(--green);
-    --btnbg: var(--white);
-    --btnfontcolor: var(--black);
+.alimstyle{
+    image-rendering: optimizeQuality;    
+    border-color: aquamarine;
+    border-radius: 20px;
 }
 
-/* Estilo geral */
-* {
-    color: var(--fontcolor);
-    font-family: helvetica;
+
+#Sushi{
+    display: flex;
+}
+#Sushi button{
+    margin-left: 10px;
 }
 
-body {
-    background: var(--bg);
-}
-
-/* Estilos do botão */
-.btn {
-    position: absolute;
-    top: 20px;
-    left: 250px;
-    height: 50px;
-    width: 50px;
-    border-radius: 50%;
-    border: none;
-    color: var(--btnfontcolor);
-    background: var(--btnbg);
-}
-
-.btn:focus {
-    outline-style: none;
-}
