@@ -1,76 +1,88 @@
-html{
+html {
     height: 100%;
     width: 100%;
     display: flex;
 
 }
-header{
+
+#Titulo {
+
+    margin-left: 30px;
+}
+
+header {
     color: rgb(0, 0, 0);
-    font-family: Andale Mono, monospace	;
-    font-weight: 600;
-    flex: 1;
-    border-radius: 15px;
-
-    
-}
-
-
-.C1{
-    background-color: rgb(129, 224, 192);
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: lighter;
     flex: 1;
     border-radius: 15px;
 
 
 }
-.C2{
-    background-color: rgb(195, 255, 66);
+
+
+.C1 {
+    background-color: rgb(247, 255, 6);
+    flex: 1;
+    border-radius: 15px;
+
+
+}
+
+.C2 {
+    background-color: rgba(210, 52, 52, 0.996);
     flex: 3;
     border-radius: 15px;
- 
+    text-align: center;
+    font-size: large;
 }
 
 .C2 #Itens {
-    font-weight:400;
+    font-weight: 400;
+    flex-direction: row;
+
 }
 
-.Container{
+.Container {
     display: flex;
     flex-direction: row;
     height: 100%;
-    width: 100%;   
-    flex: 6; 
+    width: 100%;
+    flex: 6;
 }
 
-body{
-height: 100%;
-width: 100%;
-display: flex;
-flex-direction: column;
+body {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 
 }
 
-footer{
-flex: 1;   
-background-color: rgb(44, 134, 179); 
-text-align: center;
-border-radius: 15px;
-margin: 10px;
-font-family: Arial;
-font-size: larger;
-font-weight:700;
+footer {
+    flex: 1;
+    background-color: rgba(137, 141, 143, 0.738);
+
+    text-align: center;
+    border-radius: 15px;
+    margin: 10px;
+    font-family: Arial;
+    font-size: larger;
+    font-weight: 700;
 }
 
-.alimstyle{
-    image-rendering: optimizeQuality;    
+img {
+    image-rendering: optimizeQuality;
     border-color: aquamarine;
     border-radius: 20px;
 }
 
-
-#Sushi{
-    display: flex;
-}
-#Sushi button{
+button {
     margin-left: 10px;
+    height: 20px;
 }
 
+
+p {
+    justify-content: baseline;
+}
