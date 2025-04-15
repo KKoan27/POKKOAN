@@ -50,6 +50,21 @@ main{
 footer{
     flex: 1;
     display: flex;
+    justify-content: space-around;
+    color:rgb(45, 36, 218)
+
+}
+footer ul{
+    list-style-type: none;
+    
 }
 
+footer ul li{
+    margin: 0 0 10px 0;
+    text-decoration: none;
+}
 
+a{
+    text-decoration: none;
+    color:rgb(45, 36, 218)
+}
