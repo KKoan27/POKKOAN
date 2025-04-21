@@ -1,18 +1,39 @@
-html{
-    width: 99%;
-    height: 99%;
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+@import url("@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat&display=swap');");
+
+html,:root{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 body{
     width: 100%;
     height: 100%;
-    border: black solid 2px;
     display: flex;
     flex-direction: column;
-    padding: 8px;   
+    padding: 0;
+    margin: 0;
+    background-color: rgb(255, 222, 222);
+
 }
 
-
+header .Titulo{
+    margin-left: 1em;
+    font-size: 3em;
+    font-family: Montserrat;
+    font-style: italic;
+    font-stretch:extra-expanded;
+    color: black;
+    letter-spacing: 10px;
+    text-shadow:
+    -2px -2px 0 rgb(207, 15, 71),
+     2px -2px 0 rgb(207, 15, 71),
+    -2px  2px 0 rgb(207, 15, 71),
+     2px  2px 0 rgb(207, 15, 71);
+}
 
 header  {
     display: flex;
@@ -22,8 +43,9 @@ header  {
 
 header nav{
     margin-right: 10em;
-    
+
 }
+
 
 header ul{
     display: flex;
@@ -33,17 +55,34 @@ header ul{
 }
 
 header ul li{
-    border: blue solid 5px
+    border: rgb(207, 15, 71) solid 5px;
+    background-color: rgb(47, 44, 44);
+    border-radius: 20px;
+    color: white;
+    padding: 10px;
+    transition: background-color 0.6s;
+}
+
+header ul li:hover{
+    background-color: black;
 }
 
 
 main{
     flex: 4;
+    display: flex;
+    flex-direction: row;
 }
 
-.cardID{
-    border: blue 2px solid;
-    text-align: center;
+main {
+
+    height: 90%;
+    width: 90%;
+}
+
+main .card{
+        align-self: center;
+        justify-content: center;
 }
 
 
@@ -51,7 +90,8 @@ footer{
     flex: 1;
     display: flex;
     justify-content: space-around;
-    color:rgb(45, 36, 218)
+    background-color: black;
+    color: white;
 
 }
 footer ul{
@@ -66,5 +106,7 @@ footer ul li{
 
 a{
     text-decoration: none;
-    color:rgb(45, 36, 218)
+    color:white;
 }
+
+
