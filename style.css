@@ -7,6 +7,8 @@ html,:root{
     height: 100%;
     margin: 0;
     padding: 0;
+    overflow: scroll;
+    overflow-y: visible;
 }
 
 body{
@@ -72,18 +74,27 @@ main{
     flex: 4;
     display: flex;
     flex-direction: row;
-}
-
-main {
-
+    justify-content: space-around;
+    align-items: center;
     height: 90%;
     width: 90%;
 }
 
-main .card{
-        align-self: center;
-        justify-content: center;
+main .destaque figure {
+    
+    display: inline-block;
+    text-align: center;
+    position: relative;
 }
+
+main .destaque figure p{
+    z-index: 1001;
+    position: absolute;
+    bottom: 2px;
+    left: 20px;
+
+}
+
 
 
 footer{

@@ -1,32 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\luanv\\Documents\\PROJETOS\\C#\\POKKOAN\\POKKOAN.csproj": {}
+    "/workspaces/POKKOAN/POKKOAN.csproj": {}
   },
   "projects": {
-    "C:\\Users\\luanv\\Documents\\PROJETOS\\C#\\POKKOAN\\POKKOAN.csproj": {
+    "/workspaces/POKKOAN/POKKOAN.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\luanv\\Documents\\PROJETOS\\C#\\POKKOAN\\POKKOAN.csproj",
+        "projectUniqueName": "/workspaces/POKKOAN/POKKOAN.csproj",
         "projectName": "POKKOAN",
-        "projectPath": "C:\\Users\\luanv\\Documents\\PROJETOS\\C#\\POKKOAN\\POKKOAN.csproj",
-        "packagesPath": "C:\\Users\\luanv\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\luanv\\Documents\\PROJETOS\\C#\\POKKOAN\\obj\\",
+        "projectPath": "/workspaces/POKKOAN/POKKOAN.csproj",
+        "packagesPath": "/home/codespace/.nuget/packages/",
+        "outputPath": "/workspaces/POKKOAN/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\luanv\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/codespace/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -65,7 +58,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.407/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
