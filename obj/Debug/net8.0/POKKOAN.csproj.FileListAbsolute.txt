@@ -1,0 +1,15 @@
+/workspaces/POKKOAN/bin/Debug/net8.0/POKKOAN
+/workspaces/POKKOAN/bin/Debug/net8.0/POKKOAN.deps.json
+/workspaces/POKKOAN/bin/Debug/net8.0/POKKOAN.runtimeconfig.json
+/workspaces/POKKOAN/bin/Debug/net8.0/POKKOAN.dll
+/workspaces/POKKOAN/bin/Debug/net8.0/POKKOAN.pdb
+/workspaces/POKKOAN/obj/Debug/net8.0/POKKOAN.GeneratedMSBuildEditorConfig.editorconfig
+/workspaces/POKKOAN/obj/Debug/net8.0/POKKOAN.AssemblyInfoInputs.cache
+/workspaces/POKKOAN/obj/Debug/net8.0/POKKOAN.AssemblyInfo.cs
+/workspaces/POKKOAN/obj/Debug/net8.0/POKKOAN.csproj.CoreCompileInputs.cache
+/workspaces/POKKOAN/obj/Debug/net8.0/POKKOAN.sourcelink.json
+/workspaces/POKKOAN/obj/Debug/net8.0/POKKOAN.dll
+/workspaces/POKKOAN/obj/Debug/net8.0/refint/POKKOAN.dll
+/workspaces/POKKOAN/obj/Debug/net8.0/POKKOAN.pdb
+/workspaces/POKKOAN/obj/Debug/net8.0/POKKOAN.genruntimeconfig.cache
+/workspaces/POKKOAN/obj/Debug/net8.0/ref/POKKOAN.dll
