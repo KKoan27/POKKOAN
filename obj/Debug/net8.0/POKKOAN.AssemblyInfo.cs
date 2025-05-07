@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("POKKOAN")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5ffe06f9910fbee0f45c27be9a170f5060ea936d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+030a222edc7addf5fa6726f148f25638c08f7fa6")]
 [assembly: System.Reflection.AssemblyProductAttribute("POKKOAN")]
 [assembly: System.Reflection.AssemblyTitleAttribute("POKKOAN")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
