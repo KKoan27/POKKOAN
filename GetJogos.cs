@@ -7,10 +7,10 @@ namespace GetJogos
 {
     class getJogos
     {
-        private string connectstring = "Server=localhost;Port=3306;Database=pokkoan;Uid=root;Pwd=12345;";
+        private string connectstring = "Server=localhost;Port=3306;Database=pokkoan;Uid=root;Pwd=admin;";
         public string query = "SELECT * FROM Jogos";
         
-        // Opções de serialização como campo readonly
+        // Opções de serialização como campo readonly 
         private readonly JsonSerializerOptions _jsonOptions = new()
         {
             WriteIndented = false, // Mantém compacto
@@ -19,18 +19,24 @@ namespace GetJogos
             NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowNamedFloatingPointLiterals
         };
 
+
+
+
+        // METÓDOS:
+
+
         public List<Jogos> GetJogosFromDB(string? busca = null)
         {
             var jogos = new List<Jogos>();
 
             try
             {
-                using var Conn = new MySqlConnection(connectstring);
+                MySqlConnection Conn = new MySqlConnection(connectstring);
                 Conn.Open();
 
-                using var command = new MySqlCommand(query, Conn);
-                using var reader = command.ExecuteReader();
-
+                using MySqlCommand command = new MySqlCommand(query, Conn);
+                using MySqlDataReader reader = command.ExecuteReader();
+                // AQUI O VALOR TA SENDO DEVOLVIDO E NAO CONSUMINDO!!!
                 while (reader.Read())
                 {
                     jogos.Add(new Jogos(
@@ -42,13 +48,14 @@ namespace GetJogos
 
                 if (!string.IsNullOrEmpty(busca))
                 {
-                    // Filtra case-insensitive e retorna todos os matches
-                    return jogos.Where(j => 
-                        j.nome.Contains(busca, StringComparison.OrdinalIgnoreCase))
+                    return jogos.Where(j =>
+                        j.nome.Contains(busca, (StringComparison)5))
                         .ToList();
                 }
 
                 return jogos;
+
+
             }
             catch (Exception e)
             {

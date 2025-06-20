@@ -1,85 +1,54 @@
 using MySql.Data.MySqlClient;
-using System.Text.Json.Nodes;
 using System.Text.Json;
-using Azure;
 using jogos;
+using System.Runtime.InteropServices;
 
 
 
 
-namespace PostJogos
+namespace PostJogosNamespace
 {
 
     class PostJogos
     {
 
-        private string connectstring = "Server=localhost;Port=3306;Database=pokkoan;Uid=root;Pwd=12345;";
-        public string query = "Select * From Jogos";
+        static private string connectstring ="Server=localhost;Port=3306;Database=pokkoan;Uid=root;Pwd=admin;";
+         
 
-        public Jogos search;
-        public List<Jogos> jogos = [];
-        public string ResponseJson;
-
-        public string exec(string? busca, string body)
+        static public string exec(Jogos body)
         {
 
-           
+        
 
 
-                try
+
+            string query = $"INSERT INTO JOGOS (nome,valor,descricao) values (\"{body.nome}\", \"{body.valor}\", \"{body.descricao}\");";
+            try
+            {
+
+
+                using (MySqlConnection Conn = new MySqlConnection(connectstring))
                 {
 
-                    using (MySqlConnection Conn = new MySqlConnection(connectstring))
+                    Conn.Open();
+
+                    using (MySqlCommand command = new MySqlCommand(query, Conn))
                     {
 
-                        Conn.Open();
-
-                        using (MySqlCommand command = new MySqlCommand(query, Conn))
-                        {
-
-                            using (MySqlDataReader reader = command.ExecuteReader())
-                            {
-
-                                while (reader.Read())
-                                {
-
-                                    jogos.Add(new Jogos(
-                                        reader.GetString(reader.GetOrdinal("nome")),
-                                        reader.GetDouble(reader.GetOrdinal("valor")),
-                                        reader.GetString(reader.GetOrdinal("descricao"))
-                                        ));
-                                }
-                                if (busca != null)
-                                {
-
-                                    foreach (var i in jogos)
-                                    {
-                                        if (i.nome == busca)
-                                        {
-                                            search = new Jogos(i.nome, i.valor, i.descricao);
-                                            ResponseJson = JsonSerializer.Serialize(search);
-
-                                        }
-
-                                    }
-                                }
-                                else
-                                {
-                                    ResponseJson = JsonSerializer.Serialize(jogos);
-                                }
-                            }
-                        }
-
+                        // Interessante colocar o resultado int  (que vem do metodo) em uma var para que controle melhor o sucesso
+                        command.ExecuteNonQuery();
                     }
-                    return ResponseJson;
-
 
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"ERRO: {e.Message}");
-                    throw new ApplicationException("Falha na operação", e);
-                }
+                return $"VALORES INSERIDOS NO BANCO DE DADOS!   Nome - {body.nome}";
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"ERRO: {e.Message}");
+                throw new ApplicationException("Falha na Inserção de dados");
+
+            }
             }
             
         }

@@ -1,18 +1,21 @@
-﻿using System;
-using System.Text.Encodings.Web; // Para JavaScriptEncoder
+﻿using System.Text.Encodings.Web; // Para JavaScriptEncoder
 using System.Net;
-using System.Net.Sockets;
-using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 using System.Text;
-using System.IO;
 using GetJogos;
+using Mysqlx;
+using Org.BouncyCastle.Crypto.Engines;
+using PostJogosNamespace;
 using jogos;
+using Org.BouncyCastle.Security;
+using System.Threading.Tasks;
+using Org.BouncyCastle.Asn1.Cmp;
+
+
 
 class Program
 {
 
-    static string[] arrei = new string[2];
 
 
     static void Main()
@@ -28,16 +31,19 @@ class Program
 class Server
 {
 
-    public string requestBody;
-    public string responseBody;
-    HttpListener listener;
-    HttpListenerContext context;
-    HttpListenerRequest request;
-    HttpListenerResponse response;
+    public string? requestBody;
+    public string? responseBody;
+    HttpListener? listener;
+    HttpListenerContext? context;
+    HttpListenerRequest? request;
+    HttpListenerResponse? response;
+
+    public Jogos BodyPOST; 
+
 
     getJogos connsql = new getJogos();
 
-    public string busca;
+    public string? busca;
     // Adicione esta propriedade/field na sua classe
     private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
     {
@@ -53,7 +59,7 @@ class Server
 
 
 
-    public void runServer(string porta)
+    public async Task runServer(string porta)
     {
 
 
@@ -74,32 +80,83 @@ class Server
             response = context.Response;
             response.ContentType = "application/json; charset=utf-8";
             response.ContentEncoding = Encoding.UTF8;
+
+            // Adicionando Headers de CORS
             response.AddHeader("Access-Control-Allow-Origin", "*");
-            response.AddHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+            response.AddHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, ");
             response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
 
 
 
-            if (request.HttpMethod == "GET")
+ //  Switch controladores das rotas, necessario manipular o fluxo de acordo com qual item está querendo modificar
+
+
+            switch (request.HttpMethod)
+
+
             {
-                Console.WriteLine("foi executado um GET");
-                var busca = request.QueryString["busca"];
-                responseBody = connsql.GetJogosAsJson(busca);
+                case "GET":
+                    Console.WriteLine("foi executado um GET");
+                    var busca = request.QueryString["busca"];
+                    responseBody = connsql.GetJogosAsJson(busca);
+                    break;
+
+                case "POST":
+
+                    using (StreamReader reader = new StreamReader(request.InputStream, request.ContentEncoding))
+                    {
+
+
+                        try
+                        {
+
+                            string json = await reader.ReadToEndAsync();
+                            Jogos JsonSerializado = JsonSerializer.Deserialize<Jogos>(json);
+
+
+                            if (!(JsonSerializado == null))
+                            {
+                                // instanciando o objeto jogos para uma variavel
+                               BodyPOST = new Jogos(
+                                    JsonSerializado.nome,
+                                    JsonSerializado.valor,
+                                    JsonSerializado.descricao
+                                    );
+
+                                // Jogando esta variavel como parametro para o metodo estatico
+                                responseBody =  PostJogos.exec(BodyPOST);
+                            }
+                            else
+                            {
+                                throw new Exception("Algum campo ta nulo");
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("DEU ERRO!!! \n {0}, \n Messagem:{1}", e, e.Message);
+                        }
+
+
+
+                    }
+
+                    break;
+
+
+
+                case "DELETE":
+                    responseBody = "";
+                    break;
+
+
+                case "OPTIONS":
+
+                    responseBody = "";
+                       response.StatusCode = 200;
+                    break;
             }
-            else if (request.HttpMethod == "POST")
-            {
 
-
-                using (StreamReader reader = new StreamReader(request.InputStream, request.ContentEncoding))
-                {
-
-
-
-                }
-
-                responseBody = "deu POST po, nada pra retornar";
-            }
-
+        
 
 
             byte[] buffer = Encoding.UTF8.GetBytes(responseBody);
@@ -118,4 +175,4 @@ class Server
 
     }
 
-}
+} 
