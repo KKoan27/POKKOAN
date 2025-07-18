@@ -2,26 +2,18 @@
 using System.Net;
 using System.Text.Json;
 using System.Text;
-using GetJogos;
-using Mysqlx;
-using Org.BouncyCastle.Crypto.Engines;
 using PostJogosNamespace;
 using jogos;
-using Org.BouncyCastle.Security;
-using System.Threading.Tasks;
-using Org.BouncyCastle.Asn1.Cmp;
+using Microsoft.IdentityModel.Tokens;
 
 
 
 class Program
-{
-
-
-
-    static void Main()
-    {
+{    static void Main()
+   {
         Server server = new Server();
         server.runServer("http://localhost:8080/");
+
     }
 }
 
@@ -38,10 +30,9 @@ class Server
     HttpListenerRequest? request;
     HttpListenerResponse? response;
 
-    public Jogos BodyPOST; 
+    public Jogos jogo;
 
 
-    getJogos connsql = new getJogos();
 
     public string? busca;
     // Adicione esta propriedade/field na sua classe
@@ -61,9 +52,6 @@ class Server
 
     public async Task runServer(string porta)
     {
-
-
-
         // Instanciando, inserindo os prefixes e iniciando servidor
         listener = new HttpListener();
         listener.Prefixes.Add(porta);
@@ -98,49 +86,62 @@ class Server
                 case "GET":
                     Console.WriteLine("foi executado um GET");
                     var busca = request.QueryString["busca"];
-                    responseBody = connsql.GetJogosAsJson(busca);
+                    responseBody = jogo.GetJogosAsJson(busca);
                     break;
 
                 case "POST":
 
-                    using (StreamReader reader = new StreamReader(request.InputStream, request.ContentEncoding))
+                string buy = request.QueryString["compra"];
+
+
+                    if (buy.IsNullOrEmpty())
                     {
-
-
-                        try
+                        using (StreamReader reader = new StreamReader(request.InputStream, request.ContentEncoding))
                         {
 
-                            string json = await reader.ReadToEndAsync();
-                            Jogos JsonSerializado = JsonSerializer.Deserialize<Jogos>(json);
 
-
-                            if (!(JsonSerializado == null))
+                            try
                             {
-                                // instanciando o objeto jogos para uma variavel
-                               BodyPOST = new Jogos(
-                                    JsonSerializado.nome,
-                                    JsonSerializado.valor,
-                                    JsonSerializado.descricao
-                                    );
 
-                                // Jogando esta variavel como parametro para o metodo estatico
-                                responseBody =  PostJogos.exec(BodyPOST);
+                                string json = await reader.ReadToEndAsync();
+                                Jogos JsonSerializado = JsonSerializer.Deserialize<Jogos>(json);
+
+
+                                if (!(JsonSerializado == null))
+                                {
+                                    // instanciando o objeto jogos para uma variavel
+                                    jogo = new Jogos(
+                                         JsonSerializado.nome,
+                                         JsonSerializado.valor,
+                                         JsonSerializado.descricao
+                                         );
+
+                                // Jogando esta variavel como parametro para o metodo 
+                                    responseBody = jogo.execpostgame(jogo);
+                                }
+                                else
+                                {
+                                    throw new Exception("Algum campo ta nulo");
+                                }
                             }
-                            else
+                            catch (Exception e)
                             {
-                                throw new Exception("Algum campo ta nulo");
+                                Console.WriteLine("DEU ERRO!!! \n {0}, \n Messagem:{1}", e, e.Message);
                             }
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine("DEU ERRO!!! \n {0}, \n Messagem:{1}", e, e.Message);
+
+
+
                         }
 
 
 
                     }
+                    else
+                    {
+                        jogo.execpostpedido(request);
 
-                    break;
+                }
+                   break;
 
 
 
