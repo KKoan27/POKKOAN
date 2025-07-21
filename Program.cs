@@ -5,14 +5,17 @@ using System.Text;
 using PostJogosNamespace;
 using jogos;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 
 
 class Program
-{    static void Main()
-   {
+{     async static Task Main()
+    {
         Server server = new Server();
-        server.runServer("http://localhost:8080/");
+        await server.runServer("http://localhost:8080/");
+
 
     }
 }
@@ -61,7 +64,7 @@ class Server
         while (true)
         {
             // aguardando a requisição e coletando a response e request
-            context = listener.GetContext();
+            HttpListenerContext context = await listener.GetContextAsync();
             System.Console.WriteLine("requisição chegou");
             System.Console.WriteLine(context.User);
             request = context.Request;
@@ -76,7 +79,7 @@ class Server
 
 
 
- //  Switch controladores das rotas, necessario manipular o fluxo de acordo com qual item está querendo modificar
+            //  Switch controladores das rotas, necessario manipular o fluxo de acordo com qual item está querendo manipular
 
 
             switch (request.HttpMethod)
@@ -91,7 +94,7 @@ class Server
 
                 case "POST":
 
-                string buy = request.QueryString["compra"];
+                    string buy = request.QueryString["compra"];
 
 
                     if (buy.IsNullOrEmpty())
@@ -104,7 +107,7 @@ class Server
                             {
 
                                 string json = await reader.ReadToEndAsync();
-                                Jogos JsonSerializado = JsonSerializer.Deserialize<Jogos>(json);
+                                Jogos? JsonSerializado = JsonSerializer.Deserialize<Jogos>(json);
 
 
                                 if (!(JsonSerializado == null))
@@ -116,8 +119,8 @@ class Server
                                          JsonSerializado.descricao
                                          );
 
-                                // Jogando esta variavel como parametro para o metodo 
-                                    responseBody = jogo.execpostgame(jogo);
+                                    // Jogando esta variavel como parametro para o metodo 
+                                    responseBody = jogo.Execpostgame(jogo);
                                 }
                                 else
                                 {
@@ -138,10 +141,10 @@ class Server
                     }
                     else
                     {
-                        jogo.execpostpedido(request);
+                        jogo.Execpostpedido(request);
 
-                }
-                   break;
+                    }
+                    break;
 
 
 
@@ -153,27 +156,31 @@ class Server
                 case "OPTIONS":
 
                     responseBody = "";
-                       response.StatusCode = 200;
+                    response.StatusCode = 200;
                     break;
             }
 
-        
-
-
-            byte[] buffer = Encoding.UTF8.GetBytes(responseBody);
-            response.ContentLength64 = buffer.Length;
-            using (Stream output = response.OutputStream)
-            {
-                output.Write(buffer, 0, buffer.Length);
-            }
 
 
 
+
+
+            _ = ProcessRequestAsync(response);
 
         }
 
 
 
     }
+    
+    static async Task ProcessRequestAsync(HttpListenerResponse response)
+{
+
+    string responseString = "<html><body>Olá Mundo</body></html>";
+    var buffer = Encoding.UTF8.GetBytes(responseString);
+    response.ContentLength64 = buffer.Length;
+    await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+    response.OutputStream.Close();
+}
 
 } 

@@ -34,7 +34,7 @@ async function mostrarDados() {
             return;
         }
         
-        games.forEach(game => {
+        games.ForEach(game => {
             cardContainer.innerHTML += `
                 <article class="cardID">
                     <h3>${game.nome}</h3>

@@ -49,8 +49,7 @@ namespace jogos
         public List<Jogos> GetJogosFromDB(string? busca = null)
         {
             var jogos = new List<Jogos>();
-            DB.query = "SELECT * FROM Jogos";
-
+            DB.query = new MySqlCommand("SELECT * FROM Jogos");
             try
             {
                 MySqlConnection Conn = new MySqlConnection(DB.connectstring);
@@ -58,7 +57,8 @@ namespace jogos
 
                 using MySqlCommand command = new MySqlCommand(DB.query, Conn);
                 using MySqlDataReader reader = command.ExecuteReader();
-                // AQUI O VALOR TA SENDO DEVOLVIDO E NAO CONSUMINDO!!!
+
+                
                 while (reader.Read())
                 {
                     jogos.Add(new Jogos(
@@ -95,9 +95,9 @@ namespace jogos
 
 
 
-        public string execpostpedido(HttpListenerRequest request)
+        public string Execpostpedido(HttpListenerRequest request)
         {
-            DB.query = "INSERT INTO PEDIDOS (usuario,descrição,pagamento)";
+            DB.query = new MySqlCommand ("INSERT INTO PEDIDOS (usuario,descrição,pagamento)");
 
             using StreamReader reader = new StreamReader(request.InputStream, request.ContentEncoding);
 
@@ -108,10 +108,10 @@ namespace jogos
 
         }
 
-          public string execpostgame(Jogos body)
+          public string Execpostgame(Jogos body)
         {
 
-             DB.query = $"INSERT INTO JOGOS (nome,valor,descricao) values (\"{body.nome}\", \"{body.valor}\", \"{body.descricao}\");";
+             DB.query = new MySqlCommand($"INSERT INTO JOGOS (nome,valor,descricao) values (@nome, @valor, descricao);");
             try
             {
 
