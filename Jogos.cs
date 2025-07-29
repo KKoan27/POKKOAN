@@ -49,13 +49,12 @@ namespace jogos
         public List<Jogos> GetJogosFromDB(string? busca = null)
         {
             var jogos = new List<Jogos>();
-            DB.query = new MySqlCommand("SELECT * FROM Jogos");
             try
             {
                 MySqlConnection Conn = new MySqlConnection(DB.connectstring);
                 Conn.Open();
 
-                using MySqlCommand command = new MySqlCommand(DB.query, Conn);
+                using MySqlCommand command = new MySqlCommand("SELECT * FROM Jogos", Conn);
                 using MySqlDataReader reader = command.ExecuteReader();
 
                 
@@ -77,7 +76,6 @@ namespace jogos
 
                 return jogos;
 
-
             }
             catch (Exception e)
             {
@@ -94,15 +92,13 @@ namespace jogos
         }
 
 
-
+        //Execpostpedido
         public string Execpostpedido(HttpListenerRequest request)
         {
-            DB.query = new MySqlCommand ("INSERT INTO PEDIDOS (usuario,descrição,pagamento)");
 
             using StreamReader reader = new StreamReader(request.InputStream, request.ContentEncoding);
 
             Console.WriteLine($"{reader.ReadToEnd()}");
-
 
             return "";
 
@@ -111,17 +107,15 @@ namespace jogos
           public string Execpostgame(Jogos body)
         {
 
-             DB.query = new MySqlCommand($"INSERT INTO JOGOS (nome,valor,descricao) values (@nome, @valor, descricao);");
             try
             {
 
-
-                using (MySqlConnection Conn = new MySqlConnection(DB.query))
+                using (MySqlConnection Conn = new MySqlConnection())
                 {
 
                     Conn.Open();
 
-                    using (MySqlCommand command = new MySqlCommand(DB.query , Conn))
+                    using (MySqlCommand command = new MySqlCommand($"INSERT INTO JOGOS (nome,valor,descricao) values (@nome, @valor, @descricao))" ,Conn))
                     {
                         // Interessante colocar o resultado int  (que vem do metodo) em uma var para que controle melhor o sucesso
                         command.ExecuteNonQuery();
