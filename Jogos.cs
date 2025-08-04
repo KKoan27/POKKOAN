@@ -10,7 +10,7 @@ using MySql.Data.MySqlClient;
 
 namespace jogos
 {
-    class Jogos
+    public class Jogos
     {
         private int id { get; set; }
         public string nome { get; set; }
@@ -32,7 +32,7 @@ namespace jogos
 
 
         // Opções de serialização como campo readonly 
-        private readonly JsonSerializerOptions _jsonOptions = new()
+        private  static readonly JsonSerializerOptions _jsonOptions = new()
         {
             WriteIndented = false, // Mantém compacto
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
@@ -46,20 +46,24 @@ namespace jogos
         // METÓDOS:
 
 
-        public List<Jogos> GetJogosFromDB(string? busca = null)
+        public static string GetJogosFromDB(string? busca = null)
         {
             var jogos = new List<Jogos>();
             try
             {
-                MySqlConnection Conn = new MySqlConnection(DB.connectstring);
+                
+                MySqlConnection Conn = new MySqlConnection(DB.connectstring);//Connection abre a conexão com o BD (open é o metodo que faz isso)
                 Conn.Open();
-
-                using MySqlCommand command = new MySqlCommand("SELECT * FROM Jogos", Conn);
-                using MySqlDataReader reader = command.ExecuteReader();
+                
+                using MySqlCommand command = new MySqlCommand("SELECT * FROM Jogos", Conn); //Command inicializa a query passada como 1º parametro na "IDE" do SQL 
+                using MySqlDataReader reader = command.ExecuteReader();// executa a query do MySqlCommand e retorna um objeto (Reader) contendo o resultado
 
                 
-                while (reader.Read())
+               
+                while (reader.Read()) // Read passa para a proxima linha, se tiver da true, caso nao, false
                 {
+
+                    // Aqui está alocando as informações de cada linha para um objeto na Lista List<Jogos>
                     jogos.Add(new Jogos(
                         reader.GetString(reader.GetOrdinal("nome")),
                         reader.GetDouble(reader.GetOrdinal("valor")),
@@ -69,12 +73,13 @@ namespace jogos
 
                 if (!string.IsNullOrEmpty(busca))
                 {
-                    return jogos.Where(j =>
+                    return JsonSerializer.Serialize(
+                        jogos.Where(j =>
                         j.nome.Contains(busca, (StringComparison)5))
-                        .ToList();
+                        .ToList());
                 }
 
-                return jogos;
+                return JsonSerializer.Serialize(jogos, _jsonOptions);
 
             }
             catch (Exception e)
@@ -84,15 +89,8 @@ namespace jogos
             }
         }
 
-        // Método alternativo se precisar retornar JSON diretamente
-        public string GetJogosAsJson(string? busca = null)
-        {
-            var jogos = GetJogosFromDB(busca);
-            return JsonSerializer.Serialize(jogos, _jsonOptions);
-        }
-
-
         //Execpostpedido
+        // metodo para o jogador fazer um pedido de compra x
         public string Execpostpedido(HttpListenerRequest request)
         {
 
@@ -104,7 +102,7 @@ namespace jogos
 
         }
 
-          public string Execpostgame(Jogos body)
+        public string Execpostgame(Jogos body)
         {
 
             try
@@ -115,7 +113,7 @@ namespace jogos
 
                     Conn.Open();
 
-                    using (MySqlCommand command = new MySqlCommand($"INSERT INTO JOGOS (nome,valor,descricao) values (@nome, @valor, @descricao))" ,Conn))
+                    using (MySqlCommand command = new MySqlCommand($"INSERT INTO JOGOS (nome,valor,descricao) values (@nome, @valor, @descricao))", Conn))
                     {
                         // Interessante colocar o resultado int  (que vem do metodo) em uma var para que controle melhor o sucesso
                         command.ExecuteNonQuery();
@@ -131,6 +129,8 @@ namespace jogos
                 throw new ApplicationException("Falha na Inserção de dados");
 
             }
+            
+            
             }
 
     }

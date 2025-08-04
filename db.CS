@@ -14,8 +14,8 @@ namespace db
 
     static class DB
     {
-    static public string connectstring = "Server=localhost;Port=3306;Database=pokkoan;Uid=root;Pwd=admin;";
-        
+        static public string connectstring = "Server=localhost;Port=3306;Database=pokkoan;Uid=root;Pwd=admin;";
+
     }
-    
+
 }

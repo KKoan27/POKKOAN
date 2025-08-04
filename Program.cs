@@ -7,6 +7,8 @@ using jogos;
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 using Org.BouncyCastle.Asn1.Ocsp;
+using System.Collections.Specialized;
+using Google.Protobuf.WellKnownTypes;
 
 
 
@@ -33,11 +35,11 @@ class Server
     HttpListenerRequest? request;
     HttpListenerResponse? response;
 
-    public Jogos jogo;
+    public string busca = "";
 
 
+    public Jogos? jogo;
 
-    public string? busca;
     // Adicione esta propriedade/field na sua classe
     private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
     {
@@ -88,21 +90,24 @@ class Server
             {
                 case "GET":
                     Console.WriteLine("foi executado um GET");
-                    var busca = request.QueryString["busca"];
-                    responseBody = jogo.GetJogosAsJson(busca);
+
+                    if (request.QueryString["busca"] == null || request.QueryString["busca"] == "")
+                    {
+                        responseBody = Jogos.GetJogosFromDB();
+                    }
+                    else
+                    {
+                        responseBody = Jogos.GetJogosFromDB(busca);
+                    }
+                     
                     break;
 
                 case "POST":
 
-                    string buy = request.QueryString["compra"];
-
-
-                    if (buy.IsNullOrEmpty())
+                    if (request.RawUrl.IsNullOrEmpty())
                     {
                         using (StreamReader reader = new StreamReader(request.InputStream, request.ContentEncoding))
                         {
-
-
                             try
                             {
 
@@ -124,20 +129,22 @@ class Server
                                 }
                                 else
                                 {
+
                                     throw new Exception("Algum campo ta nulo");
+
                                 }
                             }
                             catch (Exception e)
                             {
+
+                                responseBody = "Erro ao processar o JSON";
+
                                 Console.WriteLine("DEU ERRO!!! \n {0}, \n Messagem:{1}", e, e.Message);
                             }
 
 
 
                         }
-
-
-
                     }
                     else
                     {
@@ -159,13 +166,7 @@ class Server
                     response.StatusCode = 200;
                     break;
             }
-
-
-
-
-
-
-            _ = ProcessRequestAsync(response);
+            _ = ProcessRequestAsync(response, responseBody);
 
         }
 
@@ -173,11 +174,11 @@ class Server
 
     }
     
-    static async Task ProcessRequestAsync(HttpListenerResponse response)
+    static async Task ProcessRequestAsync(HttpListenerResponse response, string responseBody)
 {
 
-    string responseString = "<html><body>Olá Mundo</body></html>";
-    var buffer = Encoding.UTF8.GetBytes(responseString);
+    
+    var buffer = Encoding.UTF8.GetBytes(responseBody);
     response.ContentLength64 = buffer.Length;
     await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
     response.OutputStream.Close();
