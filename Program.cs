@@ -74,6 +74,7 @@ class Server
             response.ContentType = "application/json; charset=utf-8";
             response.ContentEncoding = Encoding.UTF8;
 
+
             // Adicionando Headers de CORS
             response.AddHeader("Access-Control-Allow-Origin", "*");
             response.AddHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, ");
@@ -88,6 +89,8 @@ class Server
 
 
             {
+
+                
                 case "GET":
                     Console.WriteLine("foi executado um GET");
 
@@ -104,52 +107,61 @@ class Server
 
                 case "POST":
 
-                    if (request.RawUrl.IsNullOrEmpty())
+                    Console.WriteLine(request.RawUrl);
+                    // Verifica se a URL está vazia ou nula
+                    try
                     {
-                        using (StreamReader reader = new StreamReader(request.InputStream, request.ContentEncoding))
+
+                        if (request.RawUrl.IsNullOrEmpty())
                         {
-                            try
+                            using (StreamReader reader = new StreamReader(request.InputStream, request.ContentEncoding))
                             {
-
-                                string json = await reader.ReadToEndAsync();
-                                Jogos? JsonSerializado = JsonSerializer.Deserialize<Jogos>(json);
-
-
-                                if (!(JsonSerializado == null))
-                                {
-                                    // instanciando o objeto jogos para uma variavel
-                                    jogo = new Jogos(
-                                         JsonSerializado.nome,
-                                         JsonSerializado.valor,
-                                         JsonSerializado.descricao
-                                         );
-
-                                    // Jogando esta variavel como parametro para o metodo 
-                                    responseBody = jogo.Execpostgame(jogo);
-                                }
-                                else
+                                try
                                 {
 
-                                    throw new Exception("Algum campo ta nulo");
+                                    string json = await reader.ReadToEndAsync();
+                                    Jogos? JsonSerializado = JsonSerializer.Deserialize<Jogos>(json);
 
+                                    if (!(JsonSerializado == null))
+                                    {
+                                        // instanciando o objeto jogos para uma variavel
+                                        jogo = new Jogos(
+                                             JsonSerializado.nome,
+                                             JsonSerializado.valor,
+                                             JsonSerializado.descricao
+                                             );
+
+
+
+                                        // Jogando esta variavel como parametro para o metodo 
+                                        responseBody = jogo.Execpostgame(jogo);
+                                    }
+                                    else
+                                    {
+                                        throw new Exception("Algum campo ta nulo");
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+
+                                    responseBody = "Erro ao processar o JSON";
+
+                                    Console.WriteLine("DEU ERRO!!! \n {0}, \n Messagem:{1}", e, e.Message);
                                 }
                             }
-                            catch (Exception e)
-                            {
-
-                                responseBody = "Erro ao processar o JSON";
-
-                                Console.WriteLine("DEU ERRO!!! \n {0}, \n Messagem:{1}", e, e.Message);
-                            }
-
-
+                        }
+                        else
+                        {
+                            
+                            jogo.Execpostpedido(request);
 
                         }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        jogo.Execpostpedido(request);
-
+                        responseBody = "Erro ao processar o pedido";
+                        Console.WriteLine($"Deu erro no if do post : {e.Message}");
+                        
                     }
                     break;
 

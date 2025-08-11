@@ -127,9 +127,9 @@ namespace jogos
             {
                 Console.WriteLine($"ERRO: {e.Message}");
                 throw new ApplicationException("Falha na Inserção de dados");
-
+                
             }
-            
+ 
             
             }
 
