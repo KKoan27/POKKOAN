@@ -1,0 +1,55 @@
+/* create database POKKOAN;
+
+
+use POKKOAN;
+
+ 
+ 
+ create table jogadores (
+	id int auto_increment not null primary key,
+    nome varchar(50),
+    email varchar(50),
+    senha varchar(50)
+ );
+ 
+  create table desenvolvedores (
+	id int auto_increment not null primary key,
+    nome varchar(50),
+    nome_estudio varchar(50),
+    email varchar(50),
+    senha varchar(50)
+ );
+  
+create table Jogos (
+ 
+	id int auto_increment not null primary key,
+	nome varchar(50),
+	valor double,
+	descricao varchar(80),
+	desenvolvedor int,
+    
+    foreign key (desenvolvedor) references desenvolvedores(ID)
+ );
+ 
+ */
+ 
+ 
+ 
+ use pokkoan;
+
+ create table pedidos (
+ 
+ id int auto_increment not null primary key,
+ jogador int,
+ valortotal double,
+ foreign key (jogador) references jogadores(id)
+ );
+ 
+ 
+ create table pedidojogo(
+ id int auto_increment not null primary key,
+ pedido_id int,
+ jogo_id int,
+ foreign key (pedido_id) references pedidos (id),
+ foreign key (jogo_id) references  Jogos(id)
+ )

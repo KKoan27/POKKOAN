@@ -6,6 +6,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Net;
 using MySql.Data.MySqlClient;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace jogos
@@ -17,6 +18,9 @@ namespace jogos
         public double valor { get; private set; }
 
         public string descricao { get; set; }
+
+        public int AvalPos { get; set; }
+        public int AvalNeg { get; set;}
 
 
 
@@ -38,10 +42,10 @@ namespace jogos
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowNamedFloatingPointLiterals
-        };
+        } ;
 
 
-
+ 
 
         // METÓDOS:
 
@@ -76,7 +80,7 @@ namespace jogos
                     return JsonSerializer.Serialize(
                         jogos.Where(j =>
                         j.nome.Contains(busca, (StringComparison)5))
-                        .ToList());
+                        .ToList(), _jsonOptions);
                 }
 
                 return JsonSerializer.Serialize(jogos, _jsonOptions);
@@ -91,7 +95,7 @@ namespace jogos
 
         //Execpostpedido
         // metodo para o jogador fazer um pedido de compra x
-        public string Execpostpedido(HttpListenerRequest request)
+        static public string Execpostpedido(HttpListenerRequest request)
         {
 
             using StreamReader reader = new StreamReader(request.InputStream, request.ContentEncoding);
@@ -102,21 +106,25 @@ namespace jogos
 
         }
 
-        public string Execpostgame(Jogos body)
+        static public string Execpostgame(Jogos body)
         {
 
             try
             {
 
-                using (MySqlConnection Conn = new MySqlConnection())
+                using (MySqlConnection Conn = new MySqlConnection(DB.connectstring))
                 {
 
                     Conn.Open();
 
-                    using (MySqlCommand command = new MySqlCommand($"INSERT INTO JOGOS (nome,valor,descricao) values (@nome, @valor, @descricao))", Conn))
+                    using (MySqlCommand command = new MySqlCommand($"INSERT INTO JOGOS (nome,valor,descricao) values (@nome, @valor, @descricao)", Conn))
                     {
                         // Interessante colocar o resultado int  (que vem do metodo) em uma var para que controle melhor o sucesso
-                        command.ExecuteNonQuery();
+
+                        command.Parameters.AddWithValue("@nome", body.nome);
+                        command.Parameters.AddWithValue("@valor", body.valor);
+                        command.Parameters.AddWithValue("@descricao", body.descricao);
+                        command.ExecuteNonQuery();                        
                     }
 
                 }

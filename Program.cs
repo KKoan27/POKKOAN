@@ -9,16 +9,17 @@ using System.Diagnostics;
 using Org.BouncyCastle.Asn1.Ocsp;
 using System.Collections.Specialized;
 using Google.Protobuf.WellKnownTypes;
+using Pedidos;
+
 
 
 
 class Program
-{     async static Task Main()
+{
+    async static Task Main()
     {
         Server server = new Server();
         await server.runServer("http://localhost:8080/");
-
-
     }
 }
 
@@ -30,14 +31,14 @@ class Server
 
     public string? requestBody;
     public string? responseBody;
-    HttpListener? listener;
-    HttpListenerContext? context;
-    HttpListenerRequest? request;
-    HttpListenerResponse? response;
+    private HttpListener? listener;
+    private HttpListenerContext? context;
+    private HttpListenerRequest? request;
+    private HttpListenerResponse? response;
 
-    public string busca = "";
+    public string? busca = "";
 
-
+    public Pedido? order;
     public Jogos? jogo;
 
     // Adicione esta propriedade/field na sua classe
@@ -92,14 +93,15 @@ class Server
 
                 
                 case "GET":
-                    Console.WriteLine("foi executado um GET");
 
-                    if (request.QueryString["busca"] == null || request.QueryString["busca"] == "")
+                    busca = request.QueryString["busca"];
+                    if (busca.IsNullOrEmpty() ||  busca == "")
                     {
-                        responseBody = Jogos.GetJogosFromDB();
+                        //  responseBody = Jogos.GetJogosFromDB();
                     }
                     else
                     {
+                        busca = request.QueryString["busca"];
                         responseBody = Jogos.GetJogosFromDB(busca);
                     }
                      
@@ -111,8 +113,8 @@ class Server
                     // Verifica se a URL está vazia ou nula
                     try
                     {
-
-                        if (request.RawUrl.IsNullOrEmpty())
+                        // Fluxo para adicionar jogo
+                        if (request.RawUrl == "/postgame")
                         {
                             using (StreamReader reader = new StreamReader(request.InputStream, request.ContentEncoding))
                             {
@@ -134,7 +136,7 @@ class Server
 
 
                                         // Jogando esta variavel como parametro para o metodo 
-                                        responseBody = jogo.Execpostgame(jogo);
+                                        responseBody = Jogos.Execpostgame(jogo);
                                     }
                                     else
                                     {
@@ -150,17 +152,41 @@ class Server
                                 }
                             }
                         }
-                        else
+                        // Fluxo para adicionar pedido
+                        else if (request.RawUrl == "/postpedido")
                         {
-                            
-                            jogo.Execpostpedido(request);
+
+                            try
+                            {
+                                using (StreamReader reader = new StreamReader(request.InputStream, request.ContentEncoding))
+                                {
+                                    string pedido = await reader.ReadToEndAsync();
+                                    Pedido? jsonpedido = JsonSerializer.Deserialize<Pedido>(pedido);
+                                    order = new Pedido(
+                                        jsonpedido.Jogador,
+                                        jsonpedido.Itens
+                                    );
+
+                                    Pedido.PostPedidos(order);
+                                    
+
+                                }
+                            }
+                            catch (JsonException e)
+                            {
+                                Console.WriteLine($"Algo deu errado no post de pedido: JSON NULO!");
+                                throw;
+
+                            }
+
+                            Jogos.Execpostpedido(request);
 
                         }
                     }
                     catch (Exception e)
                     {
-                        responseBody = "Erro ao processar o pedido";
-                        Console.WriteLine($"Deu erro no if do post : {e.Message}");
+                        responseBody = "Erro ao processar o pedido/jogo";
+                        Console.WriteLine($"Deu erro:{e} {e.Message}");
                         
                     }
                     break;
@@ -178,7 +204,7 @@ class Server
                     response.StatusCode = 200;
                     break;
             }
-            _ = ProcessRequestAsync(response, responseBody);
+             await ProcessRequestAsync(response, responseBody);
 
         }
 
@@ -188,8 +214,6 @@ class Server
     
     static async Task ProcessRequestAsync(HttpListenerResponse response, string responseBody)
 {
-
-    
     var buffer = Encoding.UTF8.GetBytes(responseBody);
     response.ContentLength64 = buffer.Length;
     await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
